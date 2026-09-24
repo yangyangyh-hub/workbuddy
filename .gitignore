@@ -1,0 +1,14 @@
+# WorkBuddy 的工作记忆与本地部署标记 —— 属于本机，不该进仓库
+.workbuddy/
+.wbapp_*.genie
+
+# 临时目录（脚本、下载、中间产物）
+.cache/
+
+# 编辑器 / 系统杂物
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+.idea/
+.vscode/

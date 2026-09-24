@@ -1,0 +1,9 @@
+# 仓库内统一用 LF 换行，避免 Windows / macOS 协作时整个文件被判定为「全部改动」
+* text=auto eol=lf
+
+# 明确这些是文本文件（不要当二进制处理）
+*.md    text eol=lf
+*.html  text eol=lf
+*.css   text eol=lf
+*.js    text eol=lf
+*.json  text eol=lf

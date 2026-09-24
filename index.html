@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<!-- 结构：本文件 index.html —— 左列导航、今日看板、其余五页、页脚，全都写在这里 -->
+<!-- 样式：css/style.css —— 颜色、字体、左右分栏、卡片高度，全部由它决定 -->
+<!-- 脚本：见 js/ 目录 —— storage.js 是全站唯一存储入口，app.js 负责启动与看板刷新，按 AGENTS.md 顺序在底部加载 -->
+<!-- 今日看板的数字由 JS 填充：目前无数据，所以显示 0；待办/记账/打卡的真实逻辑尚未实现 -->
+<html lang="zh-CN" data-page-node-id="qXLKPq8tlBrwUzC9BG5oAV">
+<head data-page-node-id="YVJftVAmOLWccrkES4QO6J">
+<meta charset="UTF-8" data-page-node-id="baDY4jLg1BUW0PAIn3mgud">
+<meta name="viewport" content="width=1200" data-page-node-id="kfmRuPMOCKZFiZl241c5VO">
+<title>个人工作台</title>
+<link rel="stylesheet" href="css/style.css?v=20260924j" data-page-node-id="i1TnKLMfTNgQRXt7IAsBok">
+</head>
+<body data-page-node-id="V6vlaLxESteTrcC4BGXYuE">
+
+<div class="app" data-page-node-id="fgIXRaiK15S5JKeVJpYhXs">
+
+  <aside class="rail" data-page-node-id="2HNb5HqnY5DWcbU6KbrqAF">
+    <div class="brand" data-page-node-id="CYJglKaQb7S1GulpjFHojb">
+      <span class="brand-mark" aria-hidden="true">
+        <svg class="icon icon-brand" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="11" rx="2.5"></rect><path d="M12 15.5V19"></path><path d="M8 19h8"></path></svg>
+      </span>
+      <span class="brand-hello">Hi，<input id="nickname" class="nickname-input" type="text" maxlength="8" placeholder="填个昵称" autocomplete="off" aria-label="你的昵称"></span>
+    </div>
+
+    <!-- 导航图标全部是内联 SVG：零依赖、随 currentColor 变色、深色模式不用换图 -->
+    <nav class="nav" id="nav" data-page-node-id="lDFAqQDUTlh2JAboG2FwA5">
+      <button type="button" class="nav-item is-active" data-page="board" data-module="dashboard" data-page-node-id="CGvdRbCVILkEitEquZEjPE">
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"></rect></svg>今日看板</button>
+      <button type="button" class="nav-item" data-page="checkin" data-module="habits" data-page-node-id="I7sOHdGgyPz3HLFcQanS9F">
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3.5"></rect><path d="M3 10h18"></path><path d="M8 3v4"></path><path d="M16 3v4"></path><path d="M9.2 15l2 2 3.8-3.8"></path></svg>打卡</button>
+      <button type="button" class="nav-item" data-page="todo" data-module="todo" data-page-node-id="h1RoRhbUt7E3NLCrjU4X1t">
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><path d="M8 12.4l2.8 2.8L16 9.6"></path></svg>待办</button>
+      <button type="button" class="nav-item" data-page="note" data-module="notes" data-page-node-id="ra1bxFSJyfLNc83cFNbTs3">
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3.5h8L19 8.5v11a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5V5A1.5 1.5 0 0 1 6.5 3.5z"></path><path d="M13.5 3.5v5h5"></path><path d="M8.5 13h7"></path><path d="M8.5 16.5h4.5"></path></svg>快速笔记</button>
+      <button type="button" class="nav-item" data-page="ledger" data-module="ledger" data-page-node-id="aIcp4ytmfI4E81oPEPu8PK">
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="3.5"></rect><path d="M3 10h18"></path><path d="M17 14.5h.01"></path></svg>记账</button>
+      <button type="button" class="nav-item" data-page="links" data-module="links" data-page-node-id="aRL6jWWAeGn2TJQBvDl58C">
+        <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10.2 13.3a3.9 3.9 0 0 0 5.5 0l2.6-2.6a3.9 3.9 0 0 0-5.5-5.5l-1.3 1.3"></path><path d="M13.8 10.7a3.9 3.9 0 0 0-5.5 0l-2.6 2.6a3.9 3.9 0 0 0 5.5 5.5l1.3-1.3"></path></svg>快捷入口</button>
+    </nav>
+
+    <!-- 深色模式开关：偏好写进 workbench.meta，不新增 localStorage key -->
+    <div class="rail-tools">
+      <button type="button" class="theme-toggle" id="themeToggle" aria-pressed="false">
+        <svg class="icon icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"></path></svg>
+        <svg class="icon icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.4 5.4l1.4 1.4M17.2 17.2l1.4 1.4M18.6 5.4l-1.4 1.4M6.8 17.2l-1.4 1.4"></path></svg>
+        <span id="themeToggleText">深色模式</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <main class="main" data-page-node-id="Xbgx3B7BGmYSWqYtUVJpqJ">
+
+    <!-- 今日看板 -->
+    <section class="page is-active" id="page-board" data-page-node-id="k94fzjSVAzJRnfiRx2P50q">
+
+      <header class="hero" data-page-node-id="izX5UUG5uXGatn3u1TmSCB">
+        <div class="hero-main">
+          <p class="hero-date" data-page-node-id="L7C07BDPACekUuVpd5TnFL">
+            <span class="hero-month" id="dateMonth" data-page-node-id="gL18yeDtulJZM7ZfNIm7j4">9月</span><span class="hero-day" id="dateDay" data-page-node-id="MBR2uScYiBs8zyKL6QYVX5">9</span><span class="hero-unit" data-page-node-id="147mqXwMFYGrmiBUHalg65">日</span><span class="hero-year" id="dateYear" data-page-node-id="SUMdNAHoixwYkSROPzEsDK">2026</span>
+          </p>
+          <p class="hero-sub" data-page-node-id="2XMbBOgo0EfB239bRHoESI"><span id="weekText" data-page-node-id="OBffJJoKcB612eXLizegTQ">星期三</span><i class="hero-sep" data-page-node-id="TboMRyqOw4jxUhNDL6ELA0"></i><span id="greetText" data-page-node-id="jK1FHBb0pgBH27cvpqQWyo">早上好</span></p>
+        </div>
+
+        <!-- 站名放在日期与番茄钟之间，真正居中（.hero 用 1fr auto 1fr 三栏网格） -->
+        <h1 class="hero-title">个人工作台</h1>
+
+        <!-- 番茄钟：极简节拍器。只存在内存里，不写 localStorage，刷新即归零 -->
+        <div class="pomo" id="pomo">
+          <div class="pomo-ring-wrap">
+            <svg class="pomo-ring" viewBox="0 0 88 88" width="88" height="88" fill="none" aria-hidden="true">
+              <circle class="pomo-track" cx="44" cy="44" r="39"></circle>
+              <circle class="pomo-bar" id="pomoBar" cx="44" cy="44" r="39"></circle>
+            </svg>
+            <span class="pomo-time num" id="pomoTime">25:00</span>
+          </div>
+
+          <div class="pomo-side">
+            <div class="pomo-phases" id="pomoPhases">
+              <button type="button" class="pomo-phase is-active" data-phase="focus">专注 25</button>
+              <button type="button" class="pomo-phase" data-phase="rest">休息 5</button>
+            </div>
+
+            <div class="pomo-actions">
+              <button type="button" class="pomo-btn" id="pomoStart">开始</button>
+              <button type="button" class="pomo-btn" id="pomoPause">暂停</button>
+              <button type="button" class="pomo-btn" id="pomoReset">重置</button>
+            </div>
+
+            <p class="pomo-hint" id="pomoHint">刷新后计时不保留。</p>
+          </div>
+        </div>
+      </header>
+
+      <section class="summary" data-page-node-id="vQMfFmExNiKjB7k5Yf6gW1">
+        <div class="card card-mint" data-page-node-id="Cum61umN3dP1oN2AMLIc7z">
+          <div class="card-top">
+            <div class="card-label" data-page-node-id="7G5DYmeatnH9ctrnyU9h46">待办进度</div>
+            <span class="card-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"></rect><path d="M8 12.4l2.8 2.8L16 9.6"></path></svg></span>
+          </div>
+          <div class="card-main" data-page-node-id="sGifddBNpYljGF9M4xFVA2">
+            <span class="num" id="boardTodoDone" data-page-node-id="AUwZJASs0VP1FBiBsEPSbF">0</span><span class="card-slash" data-page-node-id="GED3aFmieeZ3eYa2VLnwW4">/</span><span class="num muted" id="boardTodoTotal" data-page-node-id="GCiRrtwF1Ry9DaQe1hu1Cy">0</span>
+          </div>
+          <div class="card-note" id="boardTodoNote" data-page-node-id="FOrUpFDBt8QIOUy2qkbqeD">还没有待办</div>
+        </div>
+
+        <div class="card card-pink" data-page-node-id="H3SbAtchuzxkycVmF4NqHh">
+          <div class="card-top">
+            <div class="card-label" data-page-node-id="8TJqygsi7VqVy4bnD7UwBX">今日收支</div>
+            <span class="card-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="13" rx="3.5"></rect><path d="M3 10h18"></path><path d="M17 14.5h.01"></path></svg></span>
+          </div>
+          <div class="card-main" data-page-node-id="6m19di2y6G3KimIrPcIeRl">
+            <span class="money in" data-page-node-id="X3dV8plL9tHvTIyl14ODyu"><span class="money-tag" data-page-node-id="TRF7f9mqcLNyUoOFuZ0NmE">收</span><span class="num" id="boardIncome" data-page-node-id="DY2XlSYZFmCLTZRFwJqO9z">0.00</span></span>
+            <span class="money out" data-page-node-id="EPIjQvPVNg7ZsOMhatxlHk"><span class="money-tag" data-page-node-id="bMd8eVDioHh47kF4oSQvXV">支</span><span class="num" id="boardExpense" data-page-node-id="dC6aOsjx0DelF5jDi6cqZN">0.00</span></span>
+          </div>
+          <div class="card-note" data-page-node-id="hZMWjAEhuvekbqxrS11ScF">结余 <span class="num" id="boardBalance" data-page-node-id="Ki22GNVfkZN62HIFQAK5Lj">0.00</span></div>
+          <div class="card-note">本周 收 <span class="num" id="boardWeekIn">0.00</span> · 支 <span class="num" id="boardWeekOut">0.00</span></div>
+          <div class="card-note">本月 收 <span class="num" id="boardMonthIn">0.00</span> · 支 <span class="num" id="boardMonthOut">0.00</span></div>
+        </div>
+
+        <div class="card card-amber" data-page-node-id="jmwDqTMzrzQKHzc8rDk4Xm">
+          <div class="card-top">
+            <div class="card-label" data-page-node-id="5MKjB4SOB5gimWyyoEBV3s">打卡达标</div>
+            <span class="card-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"></circle><circle cx="12" cy="12" r="4.5"></circle><circle cx="12" cy="12" r="1"></circle></svg></span>
+          </div>
+          <div class="card-main" data-page-node-id="ZEAgjNU5gDZZETj9lblAgM">
+            <span class="num" id="boardHabitDone" data-page-node-id="jUbiAN6w3RvtNnyVjRzOgJ">0</span><span class="card-slash" data-page-node-id="NQTP6DcNav1YQ8CuiUDGHI">/</span><span class="num muted" id="boardHabitTotal" data-page-node-id="SZ95r7DXkPmcxgFQjAFZfa">4</span>
+          </div>
+          <div class="card-note" id="boardHabitNote" data-page-node-id="WPQRSddhqK4sFI6wBBUeQN">还没设置目标</div>
+        </div>
+      </section>
+
+      <section class="lower" data-page-node-id="IcFjEPJENjMyZ1ErLmw4C6">
+        <div class="panel" data-page-node-id="06dzc92rfI8malaJnKGOhG">
+          <div class="panel-head" data-page-node-id="hO1ci1HrWHWBd5wkgOjos9">
+            <h2 data-page-node-id="MPue9WQUyTfVy4VgxojJDS">本日待办</h2>
+            <span class="panel-meta" id="boardTodayMeta" data-page-node-id="FjIsbToYOmtV20gYhHU6pZ"><span class="num" id="boardTodayDone">0</span> / <span class="num" id="boardTodayTotal">0</span></span>
+          </div>
+          <div class="panel-body" id="boardTodayList" data-page-node-id="g5KaJ10HurKibS5F5qkLYs">
+            <p class="empty">今天还没有待办。</p>
+          </div>
+        </div>
+
+        <div class="panel" data-page-node-id="j9bVtBFRCeKkSsrcLOzTkO">
+          <div class="panel-head" data-page-node-id="psZmuMdBD6osGrK92nJawW">
+            <h2 data-page-node-id="euVyhP7qHDLqNl9OCWFnR6">打卡一览</h2>
+            <span class="panel-meta" id="boardHabitMeta" data-page-node-id="oWkgWlGRayTtOZD0nbS9Eo"><span class="num" id="boardHabitMetaDone">0</span> / <span class="num" id="boardHabitMetaTotal">4</span></span>
+          </div>
+          <div class="panel-body" id="boardHabitList" data-page-node-id="tK0rUHO7A2nwABhwTat24y">
+            <p class="empty">还没有打卡记录。</p>
+          </div>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- 其余五页：仅标题 + 空状态文案，功能未实现 -->
+    <section class="page" id="page-todo" data-page-node-id="MoFoczYpLxYxAHbPIGD6Z8">
+      <h1 class="page-title" data-page-node-id="waXYwfsTaUzwMpbN3ibpqo">待办</h1>
+
+      <div class="todo-toolbar">
+        <div class="tabs" id="todoTabs">
+          <button type="button" class="tab is-active" data-bucket="today">本日</button>
+          <button type="button" class="tab" data-bucket="week">本周</button>
+          <button type="button" class="tab" data-bucket="month">本月</button>
+        </div>
+      </div>
+
+      <form class="todo-add" id="todoAddForm">
+        <input id="todoInput" class="todo-input" type="text" maxlength="200" placeholder="写一件要做的事，回车即添加" autocomplete="off">
+        <button class="todo-add-btn" type="submit">添加</button>
+        <span class="todo-add-hint">放到：<b id="todoAddBucket">本日</b></span>
+      </form>
+
+      <div class="todo-split">
+        <div class="panel" data-page-node-id="TodoListPanel0000000001">
+          <div class="panel-head">
+            <h2>列表</h2>
+            <span class="panel-meta" id="todoListMeta"><span class="num">0</span> / <span class="num">0</span></span>
+          </div>
+          <div class="panel-body" id="todoListPanel">
+            <p class="empty" id="todoListEmpty">这个 Tab 还没有待办。</p>
+          </div>
+        </div>
+
+        <div class="panel" data-page-node-id="TodoDetailPanel00000001">
+          <div class="panel-head">
+            <h2>详情</h2>
+            <span class="panel-meta" id="todoDetailMeta">未选择</span>
+          </div>
+          <div class="panel-body" id="todoDetailPanel">
+            <p class="empty" id="todoDetailEmpty">从左边选一条待办，这里可以改内容、截止日期和关联笔记。</p>
+
+            <div class="todo-form" id="todoForm" hidden>
+              <label class="field">
+                <span class="field-label">内容</span>
+                <textarea id="todoText" class="field-textarea" rows="3"></textarea>
+              </label>
+
+              <div class="field">
+                <span class="field-label">进度</span>
+                <div class="tick-row" id="todoTicks"></div>
+                <span class="field-hint" id="todoTickHint">点档位推进进度；再点当前档位可退回 0%；点「完成」即为 100%。列表和这里两处同步。</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">优先级</span>
+                <select id="todoPriority" class="field-input"></select>
+                <span class="field-hint">改完点「保存」生效；列表按「高 → 中 → 低、未完成在前」排序。</span>
+              </label>
+
+              <label class="field">
+                <span class="field-label">截止日期（选填）</span>
+                <input type="date" id="todoDeadline" class="field-input">
+                <span class="field-hint" id="todoDeadlineHint">未填截止日期</span>
+              </label>
+
+              <label class="field">
+                <span class="field-label">关联笔记（选填）</span>
+                <select id="todoNote" class="field-input"></select>
+                <span class="field-hint" id="todoNoteHint"></span>
+              </label>
+
+              <div class="field">
+                <span class="field-label">创建时间（不可改）</span>
+                <span class="field-value num" id="todoCreated">—</span>
+              </div>
+
+              <div class="todo-actions">
+                <button type="button" class="btn-primary" id="todoSaveBtn">保存</button>
+                <button type="button" class="btn-plain" id="todoNoteBtn" hidden>查看笔记</button>
+                <button type="button" class="btn-danger" id="todoDeleteBtn">删除</button>
+                <span class="field-hint" id="todoSaveHint"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-note" data-page-node-id="0JMGAArx5VBOrSa50KasOc">
+      <h1 class="page-title" data-page-node-id="dsc2hfU6mRBeljByXMPtGm">快速笔记</h1>
+
+      <form class="note-compose" id="noteForm">
+        <input id="noteCause" class="note-cause" type="text" maxlength="60" placeholder="起因（选填）" autocomplete="off">
+        <textarea id="noteBody" class="note-body" rows="3" placeholder="记下什么（必填）。写完点「提交」才会保存，输入过程不留草稿。"></textarea>
+        <div class="note-compose-actions">
+          <button type="submit" class="btn-primary" id="noteSubmitBtn">提交</button>
+          <span class="field-hint" id="noteHint">提交前不会保存。</span>
+        </div>
+      </form>
+
+      <div class="note-split">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>笔记列表</h2>
+            <span class="panel-meta" id="noteListMeta"><span class="num">0</span> 条</span>
+          </div>
+          <div class="panel-body" id="noteListPanel">
+            <p class="empty" id="noteListEmpty">还没有笔记。写完点提交试试。</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>详情</h2>
+            <span class="panel-meta" id="noteDetailMeta">未选择</span>
+          </div>
+          <div class="panel-body" id="noteDetailPanel">
+            <p class="empty" id="noteDetailEmpty">从左边选一条笔记，这里可以看到完整内容。</p>
+
+            <div class="note-detail" id="noteDetail" hidden>
+              <div class="field">
+                <span class="field-label">起因</span>
+                <span class="field-value" id="noteDetailCause">—</span>
+              </div>
+              <div class="field">
+                <span class="field-label">内容</span>
+                <div class="note-detail-body" id="noteDetailBody"></div>
+              </div>
+              <div class="field">
+                <span class="field-label">提交时间（不可改）</span>
+                <span class="field-value" id="noteDetailTime">—</span>
+              </div>
+              <div class="todo-actions">
+                <button type="button" class="btn-danger" id="noteDeleteBtn">删除</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-ledger" data-page-node-id="z1pAdMi3RF6h05zzybako7">
+      <h1 class="page-title" data-page-node-id="HWunEZQE5DrYSfB6OMhW4j">记账</h1>
+
+      <form class="ledger-form" id="ledgerForm">
+        <label class="ledger-field">
+          <span class="habit-field-label">类型</span>
+          <select id="ledgerType" class="habit-select">
+            <option value="out">支出</option>
+            <option value="in">收入</option>
+          </select>
+        </label>
+
+        <label class="ledger-field">
+          <span class="habit-field-label">分类</span>
+          <select id="ledgerCategory" class="habit-select"></select>
+        </label>
+
+        <label class="ledger-field">
+          <span class="habit-field-label">金额（元）</span>
+          <input id="ledgerAmount" class="ledger-amount num" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off">
+        </label>
+
+        <label class="ledger-field ledger-field-grow">
+          <span class="habit-field-label">备注（选填）</span>
+          <input id="ledgerNote" class="ledger-note" type="text" maxlength="80" autocomplete="off">
+        </label>
+
+        <button type="submit" class="todo-add-btn">记一笔</button>
+      </form>
+      <p class="field-hint" id="ledgerHint">金额要大于 0、最多两位小数；分类必填，备注选填。</p>
+
+      <div class="panel ocr-box">
+        <div class="panel-head">
+          <h2>账单识别（OCR）</h2>
+          <span class="panel-meta" id="ocrState">未开始</span>
+        </div>
+        <div class="panel-body">
+          <p class="ocr-note">
+            识别可能不准，以确认卡为准；识别模型需要从 CDN 下载（首次约 30MB，较慢）。图片只在本机浏览器里处理，不上传、不保存原图。
+          </p>
+          <div class="ocr-actions">
+            <label class="btn-plain ocr-file-label">
+              选择图片
+              <input type="file" id="ocrFile" accept="image/jpeg,image/png,image/webp" hidden>
+            </label>
+            <span class="field-hint">支持 jpg / png / webp，单张不超过 8MB。也可以先点一下本页，再按 Ctrl/Cmd + V 粘贴截图。</span>
+          </div>
+          <p class="field-hint" id="ocrMessage"></p>
+          <div class="ocr-preview" id="ocrPreview" hidden>
+            <img id="ocrPreviewImg" alt="待识别的账单截图">
+          </div>
+
+          <div class="ocr-card" id="ocrCard" hidden>
+            <div class="ocr-card-head">
+              <strong>确认卡</strong>
+              <span class="field-hint" id="ocrCardHint">请核对后再入账</span>
+            </div>
+
+            <div class="ocr-fields">
+              <label class="ledger-field">
+                <span class="habit-field-label">类型</span>
+                <select id="ocrType" class="habit-select">
+                  <option value="out">支出</option>
+                  <option value="in">收入</option>
+                </select>
+              </label>
+
+              <label class="ledger-field">
+                <span class="habit-field-label">金额（元）</span>
+                <input id="ocrAmount" class="ledger-amount num" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off">
+              </label>
+
+              <label class="ledger-field">
+                <span class="habit-field-label">分类</span>
+                <select id="ocrCategory" class="habit-select"></select>
+              </label>
+
+              <label class="ledger-field ledger-field-grow">
+                <span class="habit-field-label">备注（选填）</span>
+                <input id="ocrNote" class="ledger-note" type="text" maxlength="80" autocomplete="off">
+              </label>
+            </div>
+
+            <div class="ocr-candidates" id="ocrCandidates" hidden></div>
+
+            <details class="ocr-raw" id="ocrRawWrap" hidden>
+              <summary>识别到的原文</summary>
+              <pre class="ocr-raw-text" id="ocrRawText"></pre>
+            </details>
+
+            <div class="ocr-card-actions">
+              <button type="button" class="btn-primary" id="ocrConfirmBtn">确认入账</button>
+              <button type="button" class="btn-plain" id="ocrCancelBtn">取消</button>
+              <span class="field-hint" id="ocrCardMessage"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="ledger-summary">
+        <div class="panel">
+          <div class="panel-head"><h2>今日</h2></div>
+          <div class="panel-body ledger-figures">
+            <div class="ledger-figure"><span class="habit-field-label">收入</span><span class="num amount-in" id="ledgerTodayIn">0.00</span></div>
+            <div class="ledger-figure"><span class="habit-field-label">支出</span><span class="num amount-out" id="ledgerTodayOut">0.00</span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>本周</h2></div>
+          <div class="panel-body ledger-figures">
+            <div class="ledger-figure"><span class="habit-field-label">收入</span><span class="num amount-in" id="ledgerWeekIn">0.00</span></div>
+            <div class="ledger-figure"><span class="habit-field-label">支出</span><span class="num amount-out" id="ledgerWeekOut">0.00</span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>本月</h2></div>
+          <div class="panel-body ledger-figures">
+            <div class="ledger-figure"><span class="habit-field-label">收入</span><span class="num amount-in" id="ledgerMonthIn">0.00</span></div>
+            <div class="ledger-figure"><span class="habit-field-label">支出</span><span class="num amount-out" id="ledgerMonthOut">0.00</span></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>明细</h2>
+          <span class="panel-meta" id="ledgerCount"><span class="num">0</span> 笔</span>
+        </div>
+        <div class="panel-body" id="ledgerListPanel">
+          <p class="empty" id="ledgerListEmpty">还没有记账记录。上面记一笔试试。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-links" data-page-node-id="eFTLJmGTHZlsLzZlmXrd07">
+      <h1 class="page-title" data-page-node-id="Pwn4yBB9oRShfAkuNJ6BAt">快捷入口</h1>
+
+      <div class="links-split">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>常用网站</h2>
+            <span class="panel-meta" id="siteCount"><span class="num">0</span> 个</span>
+          </div>
+          <div class="panel-body">
+            <form class="inline-form" id="siteForm">
+              <input id="siteName" class="inline-name" type="text" maxlength="40" placeholder="名称" autocomplete="off">
+              <input id="siteUrl" class="inline-value" type="text" maxlength="300" placeholder="网址，缺协议自动补 https://" autocomplete="off">
+              <button type="submit" class="todo-add-btn">添加</button>
+            </form>
+            <p class="field-hint" id="siteHint">只允许 http:// 或 https:// 开头的网址。</p>
+            <div class="item-list-host" id="siteListPanel">
+              <p class="empty" id="siteListEmpty">还没有常用网站。上面可以添加。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>常用文本</h2>
+            <span class="panel-meta" id="snippetCount"><span class="num">0</span> 条</span>
+          </div>
+          <div class="panel-body">
+            <form class="inline-form" id="snippetForm">
+              <input id="snippetName" class="inline-name" type="text" maxlength="40" placeholder="名称" autocomplete="off">
+              <input id="snippetText" class="inline-value" type="text" maxlength="500" placeholder="内容" autocomplete="off">
+              <button type="submit" class="todo-add-btn">添加</button>
+            </form>
+            <p class="field-hint" id="snippetHint">点「复制」把内容写进剪贴板。</p>
+            <div class="copy-fallback" id="copyFallback" hidden>
+              <span class="field-hint">复制没成功，请手动选中下面内容复制：</span>
+              <div class="copy-fallback-body" id="copyFallbackBody"></div>
+            </div>
+            <div class="item-list-host" id="snippetListPanel">
+              <p class="empty" id="snippetListEmpty">还没有常用文本。上面可以添加。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-checkin" data-page-node-id="KIYdtF56uIzXIc9J8v5OXI">
+      <h1 class="page-title" data-page-node-id="cpioQF9eBZ4rfuEyJolcvm">打卡</h1>
+
+      <p class="habit-note">
+        打卡项由你自己增删改：改名字直接点标题输入，类型 / 周期 / 目标次数在卡片下面选，改完立刻生效。
+        每项可设「每日」或「每周」：每日按本地自然日重置，每周从周一 00:00 开始新周期；
+        旧周期的数据会一直留着，不会因为换周期被清掉。删掉打卡项时，它的历史记录会一并删除。
+        点错了可以按「−1」退回；一次型的「−1」相当于撤销完成。
+      </p>
+
+      <form class="habit-add" id="habitAddForm">
+        <input id="habitName" class="habit-add-name" type="text" maxlength="12" placeholder="打卡项名称，比如「喝水」" autocomplete="off">
+        <label class="habit-field">
+          <span class="habit-field-label">类型</span>
+          <select id="habitKind" class="habit-select"></select>
+        </label>
+        <label class="habit-field">
+          <span class="habit-field-label">周期</span>
+          <select id="habitPeriod" class="habit-select"></select>
+        </label>
+        <label class="habit-field">
+          <span class="habit-field-label">目标次数</span>
+          <input id="habitTarget" class="habit-input num" type="number" min="1" step="1" value="1">
+        </label>
+        <button type="submit" class="todo-add-btn">添加</button>
+      </form>
+      <p class="field-hint" id="habitAddHint">多次型才有「目标次数」；一次型的目标准为 1，点一下即完成。名称最多 12 个字。</p>
+
+      <div class="habit-grid" id="habitGrid"></div>
+    </section>
+
+    <footer class="foot" data-page-node-id="NCmDL9dvFdoHyUKCDzfheZ">
+      <div class="foot-actions">
+        <button type="button" class="btn-plain" id="exportBtn">导出 JSON</button>
+        <button type="button" class="btn-plain" id="importBtn">导入 JSON</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+        <button type="button" class="btn-danger" id="clearBtn">清空全部数据</button>
+        <span class="field-hint" id="dataMessage"></span>
+      </div>
+
+      <div class="data-panel" id="dataPanel" hidden>
+        <div class="data-panel-head">
+          <strong id="dataPanelTitle">导入预览</strong>
+          <button type="button" class="item-del" id="dataPanelClose">关闭</button>
+        </div>
+        <div class="data-panel-body" id="dataPanelBody"></div>
+        <div class="data-panel-actions">
+          <button type="button" class="btn-primary" id="dataPanelConfirm">覆盖导入</button>
+          <button type="button" class="btn-plain" id="dataPanelCancel">取消</button>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<!-- 脚本：按 AGENTS.md 顺序加载（storage → 各业务模块 → app），只有 app.js 执行 init -->
+<!-- ?v= 是缓存串：改了 css/js 就要同步改这个版本号，否则别人浏览器里的旧文件会继续生效 -->
+<script src="js/storage.js?v=20260924j"></script>
+<script src="js/todo.js?v=20260924j"></script>
+<script src="js/notes.js?v=20260924j"></script>
+<script src="js/links.js?v=20260924j"></script>
+<script src="js/habits.js?v=20260924j"></script>
+<script src="js/ledger.js?v=20260924j"></script>
+<script src="js/ocr.js?v=20260924j"></script>
+<script src="js/app.js?v=20260924j"></script>
+
+</body>
+</html>
