@@ -40,6 +40,7 @@
 - [x] T22 多用户版方案定论(2026-09-24:确认**不做**账号 / 登录 / 后端;"一个页面、各存各的浏览器"已满足需求;四条数据边界写进 PRD 新章节)
 - [x] T23 PRD 全面对齐实现(2026-09-24:**8 处**修正 + 新增「多人与共用链接的数据边界」;其中"记账/快捷入口可编辑""无数据显示 `—`"两处按**实现**改,而不是反过来补功能)
 - [x] T24 装霞鹜文楷(2026-09-24:v1.522 Regular → **用户级**字体目录 `%LOCALAPPDATA%\Microsoft\Windows\Fonts`;**验 TTF name 表确认家族名 `LXGW WenKai` 与 CSS 匹配 → 零代码改动**)
+- [x] T25 发布到 GitHub(2026-09-24:仓库 `https://github.com/yangyangyh-hub/workbuddy` 转为 **public**;17 个文件首次提交;README 重写为面向外部 + 新增 MIT LICENSE / .gitignore / .gitattributes;补了仓库描述 / 主页 / 标签)
 - [x] T13a **部署静态站点(2026-09-24 完成)**:`https://personal-workbench-89221.app.workbuddy.host/`
   - 部署源目录 = 项目根 `D:\workbuddy\daka`(即"改了根目录 = 下次发布的内容"),应用绑定在这个目录上,以后重新发布链接不变
   - 管理入口:应用内「设置 — 数据管理 — 应用」(不需要另开控制台认领)
@@ -95,6 +96,28 @@
   而 `writeSubtasks` 与 `buildTodoRow` 已清零;四个资源全 200。
   - ★ 线上 `todo.js` 裸 grep `subtask` 还有 2 处 —— **剥掉注释再查,确认是头部历史注释,代码零残留**。
     裸 grep 就下结论是错的做法,这条已写进新技能 `jsdom-acceptance-testing` 的坑 3
+- **09-24 16:0x 发布到 GitHub**:`https://github.com/yangyangyh-hub/workbuddy`(**public** / MIT / 17 个文件)
+  - 用的是他名下那个原本 private 的空仓库,**只转 public 不改名**(他的选择)
+  - **排除项**:`.workbuddy/`(工作记忆)、`.wbapp_*.genie`(本地部署标记,含绝对路径)、`.cache/`
+  - **署名只在本仓库用 noreply**(`283132717+yangyangyh-hub@users.noreply.github.com`,写在 local config),
+    不动全局 —— 避免把 163 邮箱公开在 commit 里。要改回:`git config user.email yangyangyh@163.com` 再 amend
+  - ★ **GitHub API 一律用 `curl.exe -x http://127.0.0.1:50439`**:Python `urllib` 走该代理**不可靠**
+    (同一个脚本里转 public 成功、紧接着改 description 就被 `WinError 10054` 重置)。
+    凭据从 `git credential fill` 读进内存、用 subprocess 参数传给 curl,**不落盘不打屏**
+
+### 三条发布路径(2026-09-24 起,别只做一个)
+
+改完代码要考虑**三个地方**:
+
+| 去向 | 怎么发 | 什么时候 |
+|---|---|---|
+| 本地预览 | `python -m http.server 8777 --directory D:\workbuddy\daka` | 随手验证 |
+| 线上静态站 | 工作台「发布为应用」→ 同一个项目根目录 | 要给别人用时(**需 yang 当次授权**) |
+| GitHub 仓库 | `git add -A && git commit && git push` | 留档 / 给人看代码 |
+
+**固定动作,顺序不要跳**:① 改了 `css/` 或 `js/` → 同步改 `index.html` 里 9 处 `?v=` 版本号
+(AGENTS 血泪条款)→ ② 跑一遍 jsdom 验收 → ③ 才是 commit / 部署。
+
 - 进行中:等 yang 在线上点一遍待办的进度档位(手感:卡片在半宽栏下的观感、700ms 延迟移动是否舒服);
   以及**重启浏览器**后看大日期是否真的变成霞鹜文楷
 - 待办:T13b 剩下的**资料库快照更新**(PRD 口径对齐已于 09-24 完成);§7 第 21 条(要不要换发布源目录)待定
