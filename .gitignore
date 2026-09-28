@@ -5,6 +5,10 @@
 # 临时目录（脚本、下载、中间产物）
 .cache/
 
+# 部署产物 —— 由 scripts/sync-dist.py 从源码生成，不进仓库
+# （避免"改了两处不一致"：dist 永远是源码的副本）
+dist/
+
 # 编辑器 / 系统杂物
 .DS_Store
 Thumbs.db
