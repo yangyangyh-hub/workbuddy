@@ -8,7 +8,8 @@
 
   var W = window.Workbench;
   var WEEK = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-  var BUCKET_LABEL = { today: '本日', week: '本周', month: '本月' };
+  /* 'all' 是汇总视图的标签，只用于显示，不会写进存储 */
+  var BUCKET_LABEL = { all: '全部', today: '本日', week: '本周', month: '本月' };
 
   /* 待办页的界面状态（只存在内存里，不属于业务数据） */
   var todoBucket = 'today';
@@ -226,7 +227,10 @@
       if (tabs[i].dataset.bucket === todoBucket) tabs[i].classList.add('is-active');
       else tabs[i].classList.remove('is-active');
     }
-    setText('todoAddBucket', BUCKET_LABEL[todoBucket]);
+    /* 新增待办的归属。「全部」是汇总视图、本身不是一个归属，
+       所以这里显示实际会写进去的那一档（add() 对非 bucket 的视图值会回落到 today） */
+    var addTarget = W.todo.BUCKETS.indexOf(todoBucket) !== -1 ? todoBucket : 'today';
+    setText('todoAddBucket', BUCKET_LABEL[addTarget]);
   }
 
   /* ---------- 待办列表 ---------- */
@@ -400,6 +404,18 @@
     var head = document.createElement('div');
     head.className = 'todo-card-head';
     head.appendChild(chip);
+
+    /* 「全部」视图把三档混在一起，必须标出这条来自哪一档 ——
+       否则用户看不出「我明明放到本月了，怎么在这儿」 */
+    if (todoBucket === 'all') {
+      var bucketTag = document.createElement('span');
+      bucketTag.className = 'todo-bucket';
+      var bucketLabel = BUCKET_LABEL[item.bucket] || '未归类';
+      bucketTag.textContent = bucketLabel;
+      bucketTag.title = '这条待办属于「' + bucketLabel + '」';
+      head.appendChild(bucketTag);
+    }
+
     head.appendChild(text);
     head.appendChild(deadline);
     head.appendChild(del);
@@ -439,7 +455,7 @@
     var host = $('todoListPanel');
     if (!host) return;
 
-    var items = W.todo.getByBucket(todoBucket);
+    var items = W.todo.getByView(todoBucket);
     var done = items.filter(function (item) { return W.todo.isDone(item); }).length;
 
     var meta = $('todoListMeta');
@@ -459,7 +475,9 @@
     clear(host);
 
     if (items.length === 0) {
-      host.appendChild(makeEmpty('「' + BUCKET_LABEL[todoBucket] + '」还没有待办。'));
+      host.appendChild(makeEmpty(todoBucket === 'all'
+        ? '还没有任何待办。'
+        : '「' + BUCKET_LABEL[todoBucket] + '」还没有待办。'));
       lastTodoDone = {};
       return;
     }

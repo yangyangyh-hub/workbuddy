@@ -906,6 +906,20 @@ html[data-theme="dark"] .icon-moon { display: none; }
 
 .todo-card.is-done .todo-text { color: var(--ink-3); text-decoration: line-through; }
 
+/* 「全部」视图下，标出这条待办来自哪一档（本日 / 本周 / 本月）。
+   ⚠️ 边框用 --line 而不是只靠底色：已完成卡片自己的底就是 surface-2，
+   纯底色会跟卡片糊在一起、分不出边界 */
+.todo-bucket {
+  flex: 0 0 auto;
+  padding: 1px 7px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--ink-2);
+  background: var(--chip-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+}
+
 /* 进度条 + 百分比 */
 .todo-card-bar {
   display: flex;

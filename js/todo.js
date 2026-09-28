@@ -26,6 +26,12 @@
   var storage = window.Workbench.storage;
   var BUCKETS = ['today', 'week', 'month'];
 
+  /* ★「全部」是一个**视图**，不是存储里的 bucket ——
+     它永远不写进 todo.bucket，所以**不进 BUCKETS**（存储校验保持干净）。
+     在「全部」视图下新增待办时，bucket 会回落到默认的 today。 */
+  var ALL_VIEW = 'all';
+  var VIEWS = [ALL_VIEW].concat(BUCKETS);
+
   /* 优先级：高 → 中 → 低；数值越小越靠前 */
   var PRIORITIES = ['high', 'mid', 'low'];
   var PRIORITY_LABEL = { high: '高', mid: '中', low: '低' };
@@ -246,6 +252,13 @@
     }));
   }
 
+  /* 按**视图**取列表：'all' 汇总所有分组，其余等同 getByBucket。
+     视图和 bucket 分开是有意的 —— 视图只影响"看什么"，不影响"存到哪" */
+  function getByView(view) {
+    if (view === ALL_VIEW) return sortItems(getAll());
+    return getByBucket(view);
+  }
+
   function getById(id) {
     var found = getAll().filter(function (item) { return item && item.id === id; });
     return found.length ? found[0] : null;
@@ -361,6 +374,8 @@
   window.Workbench = window.Workbench || {};
   window.Workbench.todo = {
     BUCKETS: BUCKETS,
+    ALL_VIEW: ALL_VIEW,
+    VIEWS: VIEWS,
     PRIORITIES: PRIORITIES,
     PRIORITY_LABEL: PRIORITY_LABEL,
     PROGRESS_TICKS: PROGRESS_TICKS,
@@ -372,6 +387,7 @@
     normalizeProgress: normalizeProgress,
     getAll: getAll,
     getByBucket: getByBucket,
+    getByView: getByView,
     getById: getById,
     getProgress: getProgress,
     deadlineText: deadlineText,
