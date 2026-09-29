@@ -11,8 +11,10 @@
   /* 'all' 是汇总视图的标签，只用于显示，不会写进存储 */
   var BUCKET_LABEL = { all: '全部', today: '本日', week: '本周', month: '本月' };
 
-  /* 待办页的界面状态（只存在内存里，不属于业务数据） */
-  var todoBucket = 'today';
+  /* 待办页的界面状态（只存在内存里，不属于业务数据）。
+     默认落在「全部」视图 —— 进入待办页先看全貌，再自己切到某一档。
+     刷新页面会回到这里，和 index.html 上默认高亮的页签保持一致。 */
+  var todoBucket = W.todo.ALL_VIEW;
   var selectedTodoId = null;
 
   /* 笔记页的界面状态 */
@@ -100,11 +102,15 @@
 
   /* ---------- 看板下方两块面板 ---------- */
 
+  /* 看板上的待办面板：**全部待办**（三档汇总），不是只看本日。
+     面板标题固定写「全部待办」，右上角计数也按全部算。
+     id 仍叫 boardToday*（历史命名），只是展示口径变了 —— 改 id 会牵动 CSS 与验收脚本，
+     得不偿失，所以在这里留一句说明代替重命名。 */
   function renderTodayPanel() {
     var host = $('boardTodayList');
     if (!host) return;
 
-    var items = W.todo.getByBucket('today');
+    var items = W.todo.getByView(W.todo.ALL_VIEW);
     var done = items.filter(function (item) { return W.todo.isDone(item); }).length;
 
     setText('boardTodayDone', done);
@@ -113,7 +119,7 @@
     clear(host);
 
     if (items.length === 0) {
-      host.appendChild(makeEmpty('今天还没有待办。'));
+      host.appendChild(makeEmpty('还没有任何待办。'));
       return;
     }
 
@@ -132,6 +138,14 @@
 
       var box = document.createElement('span');
       box.className = 'box';
+
+      /* 三档混在一起，必须标出这条来自哪一档（和待办页「全部」视图同一口径），
+         否则用户看不出「我明明放到本月了，怎么在这儿」 */
+      var bucketTag = document.createElement('span');
+      bucketTag.className = 'todo-bucket';
+      var bucketLabel = BUCKET_LABEL[item.bucket] || '未归类';
+      bucketTag.textContent = bucketLabel;
+      bucketTag.title = '这条待办属于「' + bucketLabel + '」';
 
       var text = document.createElement('span');
       text.className = 'task-text';
@@ -161,6 +175,7 @@
 
       li.appendChild(prio);
       li.appendChild(box);
+      li.appendChild(bucketTag);
       li.appendChild(text);
       li.appendChild(line);
       li.appendChild(deadline);
